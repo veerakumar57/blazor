@@ -3,70 +3,96 @@
 @using BlazorRecapDemo.Models
 @inject CartService CartService
 @inject NavigationManager NavigationManager
-<h3>Cart</h3>
-<PageTitle>cart</PageTitle>
-<div class="" >
-    @foreach(var item in CartService.CartItems)
-    {
-        <div style="margin-top:10px">
-            <span>@item.Name</span>
-            <span>@item.Brand</span>
-            <span>@item.Price</span>
 
-            <button class="remove-btn" @onclick="()=>Delete(item)">Remove</button>
-        </div>
-        
-    }
+<h3 class="text-center mt-4">Shopping Cart</h3>
+<PageTitle>Cart</PageTitle>
+
+<div class="container mt-5">
     @if (CartService.CartItems.Count > 0)
     {
-        <button class="active" @onclick="NavigateToPayment">Buy Now</button>
-    }else{
-        <p> Please select the Card</p>
-    }
+        <div class="row mb-4">
+            <div class="col-md-6">
+                <h5>Total Products: <span class="text-primary">@TotalProducts</span></h5>
+            </div>
+            <div class="col-md-6 text-end">
+                <h5>Total Amount: <span class="text-success">₹ @TotalAmount</span></h5>
+            </div>
+        </div>
 
-    
+        @foreach (var item in GroupedCartItems)
+        {
+            <div class="row align-items-center border p-3 mb-3 shadow-sm bg-white rounded">
+                <div class="col-md-6">
+                    <h5 class="mb-1">@item.Name</h5>
+                    <p class="text-muted mb-0">@item.Brand</p>
+                    <small>Quantity: <span class="text-primary">@item.Quantity</span></small>
+                </div>
+                <div class="col-md-3">
+                    <h6 class="text-primary">₹ @item.TotalPrice</h6>
+                </div>
+                <div class="col-md-3 text-end">
+                    <button class="btn btn-danger btn-sm" @onclick="() => Delete(item)">
+                        <i class="bi bi-trash"></i> Remove
+                    </button>
+                </div>
+            </div>
+        }
+
+        <div class="text-end mt-4">
+            <button class="btn btn-success btn-lg" @onclick="NavigateToPayment">
+                <i class="bi bi-credit-card"></i> Buy Now
+            </button>
+        </div>
+    }
+    else
+    {
+        <div class="text-center mt-4">
+            <p class="text-muted">Your cart is empty. Please select items to purchase.</p>
+        </div>
+    }
 </div>
 
-@* <style>
-    .cart-item {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 10px;
-        padding: 10px;
-        border: 1px solid #ddd;
-        border-radius: 5px;
-        background-color: #f9f9f9;
-    }
-
-        .cart-item div {
-            flex: 1;
-            display: flex;
-            align-items: center;
-        }
-
-    .remove-btn {
-        background-color: #ff4d4d;
-        color: white;
-        border: none;
-        border-radius: 5px;
-        padding: 5px 10px;
-        cursor: pointer;
-        transition: background-color 0.3s ease;
-        margin-left: 20px;
-    }
-
-        .remove-btn:hover {
-            background-color: #ff1a1a;
-        }
-
-</style> *@
-
 @code {
+    private List<GroupedCartItem> GroupedCartItems = new();
+    private int TotalProducts = 0;
+    private decimal TotalAmount = 0;
 
-    public void Delete(Product product)
+    protected override void OnInitialized()
     {
-        CartService.Delete(product);
+        GroupCartItems();
+        CalculateTotals();
+    }
+
+    private void GroupCartItems()
+    {
+        // Group items by Name and Brand
+        GroupedCartItems = CartService.CartItems
+            .GroupBy(item => new { item.Name, item.Brand })
+            .Select(group => new GroupedCartItem
+                {
+                    Name = group.Key.Name,
+                    Brand = group.Key.Brand,
+                    Quantity = group.Count(),
+                    TotalPrice = group.Sum(item => item.Price)
+                })
+            .ToList();
+    }
+
+    private void CalculateTotals()
+    {
+        TotalProducts = GroupedCartItems.Sum(item => item.Quantity);
+        TotalAmount = GroupedCartItems.Sum(item => item.TotalPrice);
+    }
+
+    public void Delete(GroupedCartItem item)
+    {
+        var originalItem = CartService.CartItems.FirstOrDefault(x => x.Name == item.Name && x.Brand == item.Brand);
+        if (originalItem != null)
+        {
+            CartService.CartItems.Remove(originalItem);
+            GroupCartItems();
+            CalculateTotals();
+        }
     }
 
     private void NavigateToPayment()
@@ -74,4 +100,5 @@
         NavigationManager.NavigateTo("/payment");
     }
 
+   
 }

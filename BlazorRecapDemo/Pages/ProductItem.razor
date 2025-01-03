@@ -20,6 +20,5 @@
     private async Task AddToCart()
     {
         await OnAddCart.InvokeAsync(Product);
-        Navigation.NavigateTo("/cart");
     }
 }
