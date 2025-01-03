@@ -1,5 +1,6 @@
 ﻿namespace BlazorRecapDemo.Models
 {
+    //Added comment line for checking
     public class Product
     {
         public int Id { get; set; }
