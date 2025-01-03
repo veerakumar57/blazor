@@ -1,0 +1,67 @@
+﻿@page "/payment"
+@inject NavigationManager NavigationManager
+
+<h3>Payment Page</h3>
+<div>
+<div class="payment-container">
+    <label>Card Details:</label>
+    <input type="text" placeholder="Card Number" />
+    <br />
+</div>
+<div class="payment-container">
+
+    <label>UPI ID:</label>
+    <input type="text" placeholder="UPI ID" />
+    <br />
+</div>
+    <button class="submit-btn" @onclick="SubmitPayment">Submit Payment</button>
+</div>
+
+<style>
+    .payment-container {
+        margin: 20px;
+        padding: 20px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        background-color: #f9f9f9;
+    }
+
+    .payment-container label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: bold;
+    }
+
+    .payment-container input {
+        margin-bottom: 10px;
+        padding: 5px;
+        width: 100%;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+    }
+
+    .submit-btn {
+        background-color: #4CAF50;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        padding: 10px 15px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+
+    .submit-btn:hover {
+        background-color: #45a049;
+    }
+</style>
+
+@code {
+    private void SubmitPayment()
+    {
+        // Handle payment submission logic here
+    }
+    private void NavigateToPayment()
+    {
+        NavigationManager.NavigateTo("/payment");
+    }
+}

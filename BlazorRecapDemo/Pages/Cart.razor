@@ -1,0 +1,77 @@
+﻿@page "/cart"
+@using BlazorRecapDemo.services
+@using BlazorRecapDemo.Models
+@inject CartService CartService
+@inject NavigationManager NavigationManager
+<h3>Cart</h3>
+<PageTitle>cart</PageTitle>
+<div class="" >
+    @foreach(var item in CartService.CartItems)
+    {
+        <div style="margin-top:10px">
+            <span>@item.Name</span>
+            <span>@item.Brand</span>
+            <span>@item.Price</span>
+
+            <button class="remove-btn" @onclick="()=>Delete(item)">Remove</button>
+        </div>
+        
+    }
+    @if (CartService.CartItems.Count > 0)
+    {
+        <button class="active" @onclick="NavigateToPayment">Buy Now</button>
+    }else{
+        <p> Please select the Card</p>
+    }
+
+    
+</div>
+
+@* <style>
+    .cart-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 10px;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        background-color: #f9f9f9;
+    }
+
+        .cart-item div {
+            flex: 1;
+            display: flex;
+            align-items: center;
+        }
+
+    .remove-btn {
+        background-color: #ff4d4d;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        padding: 5px 10px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+        margin-left: 20px;
+    }
+
+        .remove-btn:hover {
+            background-color: #ff1a1a;
+        }
+
+</style> *@
+
+@code {
+
+    public void Delete(Product product)
+    {
+        CartService.Delete(product);
+    }
+
+    private void NavigateToPayment()
+    {
+        NavigationManager.NavigateTo("/payment");
+    }
+
+}

@@ -1,0 +1,93 @@
+﻿@using BlazorRecapDemo.services
+@using BlazorRecapDemo.Models
+@page "/product"
+@inject IProductService ProductService
+@inject CartService CartService
+
+<h3 style="text-align: center">List of Products</h3>
+<PageTitle> Product List</PageTitle>
+<div class="filter-section">
+    <label for="searchText">Search:</label>
+    <input type="text" id="searchText" @bind="searchText" @oninput="OnSearchTextChanged" />
+    <label for="brand-select">Filter By Brand</label>
+    <select id="band-select" @onchange="FilterByBrand">
+        <option value="All">All</option>
+        <option value="Nike">Nike</option>
+        <option value="LP">LP</option>.
+        <option value="Apple">Apple</option>
+        <option value="Adidas">Adidas</option>
+    </select>
+</div>
+
+<div class="product-list">
+    @foreach (var product in filteredProducts)
+    {
+        <ProductItem T="Product" Product="product" OnAddCart="AddToCart"></ProductItem>
+    }
+</div>
+@* 
+<div>
+    @foreach (var product in cardservice)
+    {
+        <ProductItem T="Product" Product="product" OnAddCart="Delete"></ProductItem>
+    }
+</div> *@
+
+@code {
+    private List<Product> products = new List<Product>();
+    private List<Product> filteredProducts = new List<Product>();
+    private List<Product> cardservice = new List<Product>();
+    private string? searchText;
+
+    protected override void OnInitialized()
+    {
+        products = ProductService.GetProducts();
+        filteredProducts = products;
+    }
+
+    private void AddToCart(Product product)
+    {
+        cardservice= CartService.AddToCart(product);
+    }
+
+    // private void Delete(Product product)
+    // {
+    //     CartService.Delete(product);
+    // }
+
+    private void OnSearchTextChanged(ChangeEventArgs e)
+    {
+        searchText = e.Value?.ToString();
+        FilterProducts(null, searchText);
+    }
+
+    private void FilterProducts(string? brandFilter = null, string? searchFilter = null)
+    {
+        var query = products.AsEnumerable();
+
+        if (!string.IsNullOrWhiteSpace(brandFilter) && brandFilter != "All")
+        {
+            query = query.Where(p => p.Brand == brandFilter);
+        }
+
+        if (!string.IsNullOrWhiteSpace(searchFilter))
+        {
+            query = query.Where(p => p.Name.Contains(searchFilter, StringComparison.OrdinalIgnoreCase));
+        }
+
+        filteredProducts = query.ToList();
+    }
+
+    private void FilterByBrand(ChangeEventArgs e)
+    {
+        string selectedBrand = e.Value.ToString();
+        if(selectedBrand == "All")
+        {
+            filteredProducts = products;
+        }
+        else
+        {
+            filteredProducts = products.Where(p => p.Brand == selectedBrand).ToList();
+        }
+    }
+}

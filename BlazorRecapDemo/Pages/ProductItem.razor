@@ -1,0 +1,25 @@
+﻿@using BlazorRecapDemo.Models
+@inject NavigationManager Navigation 
+@typeparam T
+
+<div class="product-list">
+    <div class="product-item">
+        <img src="@Product.ImageUrl" alt="@Product.Name" />
+        <h3>@Product.Name</h3>
+        <p>@Product.Description</p>
+        <p>@Product.Price.ToString("C")</p>
+        <button @onclick="AddToCart">Add To Cart</button>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public  Product Product{ get; set; }
+    [Parameter]
+    public EventCallback<Product> OnAddCart{ get; set; }
+    private async Task AddToCart()
+    {
+        await OnAddCart.InvokeAsync(Product);
+        Navigation.NavigateTo("/cart");
+    }
+}

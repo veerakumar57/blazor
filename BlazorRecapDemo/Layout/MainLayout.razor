@@ -1,0 +1,34 @@
+﻿@using BlazorRecapDemo.services
+@inherits LayoutComponentBase
+@inject CartService cartService
+<div class="page">
+    <div class="sidebar">
+        <NavMenu />
+    </div>
+
+    <main>
+        <div class="top-row px-4">
+            <a href="https://learn.microsoft.com/aspnet/core/" target="_blank">About</a>
+        </div>
+
+        @* <div class="cart-container">
+            <a href="/cart" class="cart-link">
+                <img src="images/cat.jpg" alt="Cart Icon" class="cart-icon" />
+                @if (cartService.CartItems.Count > 0)
+                {
+                    <span class="cart-item-count">@cartService.CartItems.Count</span>
+                }
+                else
+                {
+                    <span class="cart-item-count">0</span>
+                }
+            </a>
+        </div> *@
+
+
+
+        <article class="content px-4">
+            @Body
+        </article>
+    </main>
+</div>

@@ -1,0 +1,34 @@
+﻿/* Filter Section */
+.filter-section {
+    display: inline-block; /* Align label and dropdown horizontally */
+    align-items: center;
+    justify-content: flex-start; /* Align items to the left */
+    margin: 16px 0; /* Add vertical spacing */
+    padding: 8px;
+    background-color: #f9f9f9; /* Light background */
+    border: 1px solid #ddd; /* Subtle border */
+    border-radius: 8px; /* Rounded corners */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+}
+
+    .filter-section label {
+        font-size: 1rem;
+        font-weight: bold;
+        margin-right: 8px;
+        color: #333;
+    }
+
+    .filter-section select {
+        padding: 8px;
+        font-size: 1rem;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        background-color: #fff;
+        color: #333;
+        transition: border-color 0.3s;
+    }
+
+        .filter-section select:focus {
+            border-color: #007bff;
+            outline: none;
+        }
